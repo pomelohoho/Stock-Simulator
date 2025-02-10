@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\StocksSimulator.Server.props" />
+</Project>

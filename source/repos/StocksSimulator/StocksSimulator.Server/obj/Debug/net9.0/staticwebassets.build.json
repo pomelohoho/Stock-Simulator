@@ -1,0 +1,24 @@
+{
+  "Version": 1,
+  "Hash": "4JDJgWoYapg2IvuRU/zKDWdv8WI8eeLfjGhAKnyEg00=",
+  "Source": "StocksSimulator.Server",
+  "BasePath": "_content/StocksSimulator.Server",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [
+    {
+      "Identity": "C:\\Users\\Admin\\source\\repos\\StocksSimulator\\stockssimulator.client\\stockssimulator.client.esproj",
+      "Version": 2,
+      "Source": "stockssimulator.client",
+      "GetPublishAssetsTargets": "GetCurrentProjectPublishStaticWebAssetItems",
+      "AdditionalPublishProperties": "Configuration=Debug;Platform=AnyCPU",
+      "AdditionalPublishPropertiesToRemove": "WebPublishProfileFile;TargetFramework",
+      "GetBuildAssetsTargets": "GetCurrentProjectBuildStaticWebAssetItems",
+      "AdditionalBuildProperties": "Configuration=Debug;Platform=AnyCPU",
+      "AdditionalBuildPropertiesToRemove": "WebPublishProfileFile;TargetFramework"
+    }
+  ],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

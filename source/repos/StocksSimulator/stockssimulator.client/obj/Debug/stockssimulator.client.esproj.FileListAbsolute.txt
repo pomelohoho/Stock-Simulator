@@ -1,0 +1,1 @@
+C:\Users\Admin\source\repos\StocksSimulator\stockssimulator.client\obj\Debug\stockssimulator.client.esproj.CoreCompileInputs.cache
