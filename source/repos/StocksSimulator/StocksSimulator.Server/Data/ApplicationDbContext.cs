@@ -1,36 +1,57 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
+using StocksSimulator.Server.Models;
 
 namespace StocksSimulator.Server.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
-        {
-        }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-        public DbSet<StockPrice> StockPrices { get; set; }
+        public DbSet<Security> Securities { get; set; }
+        public DbSet<PriceHistory> PriceHistories { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Holding> Holdings { get; set; }
         public DbSet<SimulationResult> SimulationResults { get; set; }
-    }
+        public DbSet<Transaction> Transactions { get; set; }
 
-    public class StockPrice
-    {
-        public int Id { get; set; }
-        public string Symbol { get; set; }
-        public DateTime TimeStamp { get; set; }
-        public decimal Open { get; set; }
-        public decimal High { get; set; }
-        public decimal Low { get; set; }
-        public decimal Close { get; set; }
-        public long Volume { get; set; }
-    }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<PriceHistory>()
+                .HasOne(ph => ph.Security)
+                .WithMany(s => s.PriceHistories)
+                .HasForeignKey(ph => ph.SecurityId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-    public class SimulationResult
-    {
-        public int Id { get; set; }
-        public string AlgorithmName { get; set; }
-        public decimal ProfitOrLoss { get; set; }
-        public DateTime RunDate { get; set; }
+            modelBuilder.Entity<Holding>()
+                .HasOne(h => h.User)
+                .WithMany(u => u.Holdings)
+                .HasForeignKey(h => h.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Holding>()
+                .HasOne(h => h.Security)
+                .WithMany(s => s.Holdings)
+                .HasForeignKey(h => h.SecurityId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Transaction>()
+                .HasOne(t => t.User)
+                .WithMany(u => u.Transactions)
+                .HasForeignKey(t => t.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Transaction>()
+                .HasOne(t => t.Security)
+                .WithMany()
+                .HasForeignKey(t => t.SecurityId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Transaction>()
+                .Property(t => t.PricePerShare)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Security>()
+                .Property(s => s.CurrentPrice)
+                .HasPrecision(18, 2);
+        }
     }
 }

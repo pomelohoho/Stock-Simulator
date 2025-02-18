@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using StocksSimulator.Server.Data;
+using StocksSimulator.Server.Services;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpClient<AlphaVantageService>();
-
+builder.Services.AddScoped<TransactionService>();
 
 builder.Services.AddCors(options =>
 {

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StocksSimulator.Server.Data;
 
@@ -11,9 +12,11 @@ using StocksSimulator.Server.Data;
 namespace StocksSimulator.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250212220101_AddNameAndSectorFields")]
+    partial class AddNameAndSectorFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace StocksSimulator.Server.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("StocksSimulator.Server.Models.Holding", b =>
+            modelBuilder.Entity("StocksSimulator.Server.Data.Holding", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -30,10 +33,7 @@ namespace StocksSimulator.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("AveragePrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("Quantity")
+                    b.Property<int>("Amount")
                         .HasColumnType("int");
 
                     b.Property<int>("SecurityId")
@@ -51,7 +51,7 @@ namespace StocksSimulator.Server.Migrations
                     b.ToTable("Holdings");
                 });
 
-            modelBuilder.Entity("StocksSimulator.Server.Models.PriceHistory", b =>
+            modelBuilder.Entity("StocksSimulator.Server.Data.PriceHistory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -87,7 +87,7 @@ namespace StocksSimulator.Server.Migrations
                     b.ToTable("PriceHistories");
                 });
 
-            modelBuilder.Entity("StocksSimulator.Server.Models.Security", b =>
+            modelBuilder.Entity("StocksSimulator.Server.Data.Security", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -102,9 +102,11 @@ namespace StocksSimulator.Server.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Sector")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Symbol")
@@ -116,7 +118,7 @@ namespace StocksSimulator.Server.Migrations
                     b.ToTable("Securities");
                 });
 
-            modelBuilder.Entity("StocksSimulator.Server.Models.SimulationResult", b =>
+            modelBuilder.Entity("StocksSimulator.Server.Data.SimulationResult", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -139,55 +141,13 @@ namespace StocksSimulator.Server.Migrations
                     b.ToTable("SimulationResults");
                 });
 
-            modelBuilder.Entity("StocksSimulator.Server.Models.Transaction", b =>
+            modelBuilder.Entity("StocksSimulator.Server.Data.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("PricePerShare")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SecurityId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("TransactionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SecurityId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Transactions");
-                });
-
-            modelBuilder.Entity("StocksSimulator.Server.Models.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Balance")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -205,15 +165,15 @@ namespace StocksSimulator.Server.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("StocksSimulator.Server.Models.Holding", b =>
+            modelBuilder.Entity("StocksSimulator.Server.Data.Holding", b =>
                 {
-                    b.HasOne("StocksSimulator.Server.Models.Security", "Security")
+                    b.HasOne("StocksSimulator.Server.Data.Security", "Security")
                         .WithMany("Holdings")
                         .HasForeignKey("SecurityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("StocksSimulator.Server.Models.User", "User")
+                    b.HasOne("StocksSimulator.Server.Data.User", "User")
                         .WithMany("Holdings")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -224,9 +184,9 @@ namespace StocksSimulator.Server.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("StocksSimulator.Server.Models.PriceHistory", b =>
+            modelBuilder.Entity("StocksSimulator.Server.Data.PriceHistory", b =>
                 {
-                    b.HasOne("StocksSimulator.Server.Models.Security", "Security")
+                    b.HasOne("StocksSimulator.Server.Data.Security", "Security")
                         .WithMany("PriceHistories")
                         .HasForeignKey("SecurityId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -235,37 +195,16 @@ namespace StocksSimulator.Server.Migrations
                     b.Navigation("Security");
                 });
 
-            modelBuilder.Entity("StocksSimulator.Server.Models.Transaction", b =>
-                {
-                    b.HasOne("StocksSimulator.Server.Models.Security", "Security")
-                        .WithMany()
-                        .HasForeignKey("SecurityId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("StocksSimulator.Server.Models.User", "User")
-                        .WithMany("Transactions")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Security");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("StocksSimulator.Server.Models.Security", b =>
+            modelBuilder.Entity("StocksSimulator.Server.Data.Security", b =>
                 {
                     b.Navigation("Holdings");
 
                     b.Navigation("PriceHistories");
                 });
 
-            modelBuilder.Entity("StocksSimulator.Server.Models.User", b =>
+            modelBuilder.Entity("StocksSimulator.Server.Data.User", b =>
                 {
                     b.Navigation("Holdings");
-
-                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }
